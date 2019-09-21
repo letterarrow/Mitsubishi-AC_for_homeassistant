@@ -11,6 +11,7 @@ from homeassistant.components.climate.const import (
     FAN_MEDIUM,
     FAN_HIGH,
     SUPPORT_FAN_MODE,
+    SUPPORT_SWING_MODE,
     SUPPORT_TARGET_TEMPERATURE
 )
 from homeassistant.const import (
@@ -18,6 +19,14 @@ from homeassistant.const import (
     CONF_NAME,
     TEMP_CELSIUS
 )
+
+FAN_DIRECTION_AUTO = "auto"
+FAN_DIRECTION_HIGH = "high"
+FAN_DIRECTION_MEDIUMHIGH = "medium high"
+FAN_DIRECTION_MEDIUM = "medium"
+FAN_DIRECTION_MEDIUMLOW = "medium low"
+FAN_DIRECTION_LOW = "low"
+FAN_DIRECTION_SWING = "swing"
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     name = config.get(CONF_NAME)
@@ -35,6 +44,7 @@ class MyClimate(ClimateDevice):
         self._hvac_mode = HVAC_MODE_OFF
         self._target_temp = 25
         self._fan_mode = FAN_AUTO
+        self._swing_mode = FAN_DIRECTION_AUTO
 
     @property
     def temperature_unit(self):
@@ -70,6 +80,22 @@ class MyClimate(ClimateDevice):
             FAN_HIGH
         ]
 
+    @property
+    def swing_mode(self):
+        return self._swing_mode
+
+    @property
+    def swing_modes(self):
+        return [
+            FAN_DIRECTION_AUTO,
+            FAN_DIRECTION_HIGH,
+            FAN_DIRECTION_MEDIUMHIGH,
+            FAN_DIRECTION_MEDIUM,
+            FAN_DIRECTION_MEDIUMLOW,
+            FAN_DIRECTION_LOW,
+            FAN_DIRECTION_SWING
+        ]
+
     def set_temperature(self, **kwargs):
         self._target_temp = kwargs.get(ATTR_TEMPERATURE)
 
@@ -83,9 +109,12 @@ class MyClimate(ClimateDevice):
     def set_hvac_mode(self, hvac_mode):
         self._hvac_mode = hvac_mode
 
+    def set_swing_mode(self, swing_mode):
+        self._swing_mode = swing_mode
+
     @property
     def supported_features(self):
-        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE
+        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE
     
     @property
     def min_temp(self):
