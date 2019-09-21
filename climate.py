@@ -1,5 +1,6 @@
 from homeassistant.components.climate import ClimateDevice
 from homeassistant.components.climate.const import (
+    ATTR_HVAC_MODE,
     HVAC_MODE_OFF,
     HVAC_MODE_HEAT,
     HVAC_MODE_COOL,
@@ -56,6 +57,9 @@ class MyClimate(ClimateDevice):
     def target_temperature_step(self):
         return 1.0
     
+    def set_hvac_mode(self, hvac_mode):
+        self._hvac_mode = hvac_mode
+
     @property
     def supported_features(self):
         return SUPPORT_TARGET_TEMPERATURE
